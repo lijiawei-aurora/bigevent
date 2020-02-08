@@ -11,5 +11,7 @@ const APILIST = {
     // 退出登录
     user_logout: BASEURL + "/admin/logout",
     // 获取用户信息
-    user_getInfo: BASEURL + "/admin/getuser"
+    user_getInfo: BASEURL + "/admin/getuser",
+    // 文章类别获取
+    category_get: BASEURL + "/admin/category_search"
 };
