@@ -165,10 +165,10 @@
     <script src="js/jquery-1.12.4.min.js"></script>
     <script>
         // 点击退出按钮 退出登录
-        $(".icon-tuichu").click(function() {
+        $(".icon-tuichu").click(() => {
             // 调用退出方法
 
-            user.logout().then(function(res) {
+            user.logout().then(res => {
                 // console.log(111);
                 if (res.code === 200) {
                     window.location.href = "login.html";
@@ -177,7 +177,7 @@
         });
 
         // 获取用户信息
-        user.getInfo().then(function(res) {
+        user.getInfo().then(res => {
             if (res.code === 200) {
                 // console.log(res);
                 // .user_info下面的 span
