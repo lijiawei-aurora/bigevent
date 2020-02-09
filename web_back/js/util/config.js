@@ -13,5 +13,9 @@ const APILIST = {
     // 获取用户信息
     user_getInfo: BASEURL + "/admin/getuser",
     // 文章类别获取
-    category_get: BASEURL + "/admin/category_search"
+    category_get: BASEURL + "/admin/category_search",
+    // 新增文章类别
+    category_add: BASEURL + "/admin/category_add",
+    // 删除文章类别
+    category_del: BASEURL + "/admin/category_delete"
 };
