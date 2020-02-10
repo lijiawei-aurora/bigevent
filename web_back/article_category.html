@@ -54,7 +54,7 @@
         </table>
       </div>
     </div>
-
+    <!-- 添加分类的模态框 -->
     <div class="modal fade" id="addModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -91,6 +91,44 @@
         </div>
       </div>
     </div>
+    <!-- 编辑分类的模态框 -->
+    <div class="modal fade" id="editModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            ></button>
+            <h4 class="modal-title">编辑分类</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <input type="hidden" id="edit_id" />
+              <div class="form-group">
+                <label for="edit_name" class="control-label">分类名称:</label>
+                <input type="text" class="form-control" id="edit_name" />
+              </div>
+              <div class="form-group">
+                <!-- label 的for属性的作用是关联文本框 -->
+                <label for="edit_slug" class="control-label">分类别名:</label>
+                <input type="text" class="form-control" id="edit_slug" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default model_shutoff">
+              关闭
+            </button>
+            <button type="button" class="btn btn-primary" id="model_save">
+              修改
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="./js/util/config.js"></script>
     <script src="./js/util/category.js"></script>
     <!-- 引入 模板引擎 -->
@@ -102,7 +140,8 @@
               <td>{{item.name}}</td>
               <td>{{item.slug}}</td>
               <td class="text-center">
-                  <a href='javascript:editTr({"id":{{item.id}},"slug":{{item.slug}},"name":{{item.name}}});' class="btn btn-info btn-xs">编辑</a
+                  <a href='javascript:; ' data-id="{{item.id}}"
+                  data-slug="{{item.slug}}"  data-name="{{item.name}}" class="btn btn-info btn-xs" id="edit">编辑</a
       >
       <a
         href="javascript:;"
@@ -136,8 +175,8 @@
       //         $('#addModal').modal('show');
       //     }
       // })
-      //    获取文章分类  category是一个对象 存各种方法
       getAndShow();
+      //    获取文章分类  category是一个对象 存各种方法
       //封装成函数
       function getAndShow() {
         category.get().then(res => {
@@ -177,10 +216,52 @@
         $("#addModal").modal("hide");
       });
       // 删除功能  用事件委托
-      $("#category_table").on("click", ".del", () => {
+      $("#category_table").on("click", ".del", function() {
         // alert(1);
         category.del($(this).attr("data-id")).then(res => {
           getAndShow();
+        });
+      });
+      // 类别编辑功能
+      $("#category_table").on("click", "#edit", function() {
+        // 通过attr获取自定义属性 并显示在模态框的文本框中
+        $("#edit_id").val($(this).attr("data-id"));
+        $("#edit_name").val($(this).attr("data-name"));
+        $("#edit_slug").val($(this).attr("data-slug"));
+        // 显示模态框
+        $("#model_save").attr("data-id", $(this).attr("data-id"));
+        $("#editModal").modal("show");
+      });
+      $(".model_shutoff").click(() => {
+        $("#editModal").modal("hide");
+      });
+      $("#model_save").click(() => {
+        var new_name = $("#edit_name")
+          .val()
+          .trim();
+        var new_slug = $("#edit_slug")
+          .val()
+          .trim();
+        var id = $("#edit_id")
+          .val()
+          .trim();
+        if (new_name.length.length === 0 || new_slug.length === 0) {
+          alert("名称或别名不能为空");
+        }
+        // $.ajax({
+        //   url:"http://192.168.1.105:8000/"
+        // })
+
+        category.edit(id, new_name, new_slug).then(res => {
+          if (res.code === 200) {
+            $("#edit_name").val("");
+            $("#edit_slug").val("");
+            $("#edit_id").val("");
+            $("#editModal").modal("hide");
+            getAndShow();
+          } else {
+            alert(res.msg);
+          }
         });
       });
     </script>

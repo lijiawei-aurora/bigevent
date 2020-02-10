@@ -17,5 +17,7 @@ const APILIST = {
     // 新增文章类别
     category_add: BASEURL + "/admin/category_add",
     // 删除文章类别
-    category_del: BASEURL + "/admin/category_delete"
+    category_del: BASEURL + "/admin/category_delete",
+    // 编辑文章类别
+    category_edit: BASEURL + "/admin/category_edit"
 };

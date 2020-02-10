@@ -9,5 +9,7 @@ let category = {
     // 添加文章类型
     add: (name, slug) => $.post(APILIST.category_add, { name, slug }),
     // 删除文章类型
-    del: id => $.post(APILIST.category_del, { id })
+    del: id => $.post(APILIST.category_del, { id }),
+    // 编辑文章类型
+    edit: (id, name, slug) => $.post(APILIST.category_edit, { id, name, slug })
 };
