@@ -12,6 +12,7 @@ const APILIST = {
     user_logout: BASEURL + "/admin/logout",
     // 获取用户信息
     user_getInfo: BASEURL + "/admin/getuser",
+
     // 文章类别获取
     category_get: BASEURL + "/admin/category_search",
     // 新增文章类别
@@ -19,5 +20,13 @@ const APILIST = {
     // 删除文章类别
     category_del: BASEURL + "/admin/category_delete",
     // 编辑文章类别
-    category_edit: BASEURL + "/admin/category_edit"
+    category_edit: BASEURL + "/admin/category_edit",
+    // 获取文章信息
+    article_get: BASEURL + "/admin/search",
+    // 发布文章
+    article_publish: BASEURL + "/admin/article_publish",
+    // 文章编辑
+    article_edit: BASEURL + "/admin/article_edit",
+    // 删除文章
+    article_edit: BASEURL + "/admin/article_delete"
 };

@@ -254,9 +254,10 @@
 
         category.edit(id, new_name, new_slug).then(res => {
           if (res.code === 200) {
-            $("#edit_name").val("");
-            $("#edit_slug").val("");
-            $("#edit_id").val("");
+            // 每次会重新赋值，所以不用清空
+            // $("#edit_name").val("");
+            // $("#edit_slug").val("");
+            // $("#edit_id").val("");
             $("#editModal").modal("hide");
             getAndShow();
           } else {
