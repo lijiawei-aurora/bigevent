@@ -28,5 +28,5 @@ const APILIST = {
     // 文章编辑
     article_edit: BASEURL + "/admin/article_edit",
     // 删除文章
-    article_edit: BASEURL + "/admin/article_delete"
+    article_del: BASEURL + "/admin/article_delete"
 };

@@ -137,7 +137,7 @@
           >
           <a
             href="javascript:;"
-            class="btn btn-danger btn-xs"
+            class="btn btn-danger btn-xs" data-id="{{item.id}}" id="del_btn"
             >删除</a
           >
         </td>
@@ -165,19 +165,27 @@
       var curStatus = "";
       // 当前要查询的文章分类
       var curType = "";
-
+      // 记录总页数;
+      var total = 1;
       const getAndShow = () => {
         // 将文章信息取出并显示
         article.get(curPage, curStatus, curType).then(res => {
           if (res.code === 200) {
             let htmlStr = template("tmp1", res);
-            // console.log(res);
+
             $("#article_list").html(htmlStr);
             // 分页插件
+            if (total != res.totalPage) {
+              // 此时的总页数不同 需要将分页插件删除 重新设置
+              $("#pagination-demo").twbsPagination("destroy");
+              total = res.totalPage;
+            }
             $("#pagination-demo").twbsPagination({
               //  以下属性都是插件自带的
               //  总页数从后端取回的数据
+
               totalPages: res.totalPage,
+
               //  显示几页在页码  当前为1-5
               visiblePages: 5,
               first: "首页",
@@ -187,7 +195,7 @@
               // 初始化页面时，不要单击起始页按钮
               initiateStartPageClick: false,
               // 单击一次页码执行一次
-              onPageClick: function(event, page) {
+              onPageClick: (event, page) => {
                 // 单击哪一个页码的按钮
                 curPage = page;
                 getAndShow();
@@ -202,11 +210,23 @@
       // 文章筛选功能
       $("#btnSearch").click(() => {
         // 将当前选中的赋给全局变量
+        curPage = 1;
         curType = $("#selCategory").val();
         curStatus = $("#selStatus").val();
-        console.log(curType, curStatus);
         getAndShow();
       });
+
+      // 文章删除功能  利用事件委托
+      $("#article_list").on("click", "#del_btn", () => {
+        alert("确定要删除吗");
+        let id = $(this).attr("data-id");
+        article.del(id).then(res => {
+          if (res.code === 200) {
+            getAndShow();
+          }
+        });
+      });
+      // 添加文章功能
     </script>
     <script></script>
   </body>

@@ -218,6 +218,7 @@
       // 删除功能  用事件委托
       $("#category_table").on("click", ".del", function() {
         // alert(1);
+        console.log(this);
         category.del($(this).attr("data-id")).then(res => {
           getAndShow();
         });
