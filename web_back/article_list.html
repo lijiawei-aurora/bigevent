@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="css/iconfont.css" />
     <link rel="stylesheet" href="css/main.css" />
     <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入分页插件 -->
+    <script src="../js库/jquery.twbsPagination.js"></script>
 </head>
 
 <body>
@@ -30,11 +32,11 @@
                 <option>爱旅行</option> -->
               </select>
                         <select id="selStatus" name="" class="form-control input-sm">
-                <option>所有状态</option>
-                <option value="drafted">草稿</option>
-                <option value="published">已发布</option>
+                <option value="">所有状态</option>
+                <option value="草稿">草稿</option>
+                <option value="已发布">已发布</option>
               </select>
-                        <button id="btnSearch" class="btn btn-default btn-sm">
+                        <button id="btnSearch" class="btn btn-default btn-sm" type="button">
                 筛选
               </button>
                     </form>
@@ -80,8 +82,9 @@
         </table>
 
         <div class="row text-center">
-          <ul class="pagination pagination-sm">
-            <li class="page-item first disabled">
+          <!-- 使用分页插件 -->
+          <ul class="pagination pagination-sm" id="pagination-demo">
+            <!-- <li class="page-item first disabled">
               <a href="#" class="page-link">首页</a>
                     </li>
                     <li class="page-item prev disabled">
@@ -101,7 +104,7 @@
                     </li>
                     <li class="page-item last">
                         <a href="#" class="page-link">尾页</a>
-                    </li>
+                    </li> -->
                     </ul>
                 </div>
             </div>
@@ -112,13 +115,12 @@
         <script src="./js/template-web.js"></script>
         <!-- 分类显示模板 -->
         <script type="text/html" id="tmp">
-            <option>所有分类</option>
+            <option value="">所有分类</option>
             {{each data item}}
-            <option>{{item.name}}</option>
+            <option value={{item.id}}>{{item.name}}</option>
             {{/each}}
             <option></option>
         </script>
-        var curpage=1;
         <!-- 文章列表显示模板 -->
         <script type="text/html" id="tmp1">
             {{each data item}}
@@ -157,14 +159,55 @@
           $("#selCategory").html(htmlStr);
         }
       });
-      // 将文章信息取出并显示
-      article.get().then(res => {
-        if (res.code === 200) {
-          let htmlStr = template("tmp1", res);
-          console.log(res);
-          $("#article_list").html(htmlStr);
-        }
+      // 设置当前查询第几页的数据
+      var curPage = 1;
+      // 当前要查询的文章状态
+      var curStatus = "";
+      // 当前要查询的文章分类
+      var curType = "";
+
+      const getAndShow = () => {
+        // 将文章信息取出并显示
+        article.get(curPage, curStatus, curType).then(res => {
+          if (res.code === 200) {
+            let htmlStr = template("tmp1", res);
+            // console.log(res);
+            $("#article_list").html(htmlStr);
+            // 分页插件
+            $("#pagination-demo").twbsPagination({
+              //  以下属性都是插件自带的
+              //  总页数从后端取回的数据
+              totalPages: res.totalPage,
+              //  显示几页在页码  当前为1-5
+              visiblePages: 5,
+              first: "首页",
+              last: "尾页",
+              prev: "上一页",
+              next: "下一页",
+              // 初始化页面时，不要单击起始页按钮
+              initiateStartPageClick: false,
+              // 单击一次页码执行一次
+              onPageClick: function(event, page) {
+                // 单击哪一个页码的按钮
+                curPage = page;
+                getAndShow();
+              }
+            });
+          }
+        });
+      };
+
+      getAndShow();
+
+      // 文章筛选功能
+      $("#btnSearch").click(() => {
+        // 将当前选中的赋给全局变量
+        curType = $("#selCategory").val();
+        curStatus = $("#selStatus").val();
+        console.log(curType, curStatus);
+        getAndShow();
       });
     </script>
+    <script></script>
   </body>
 </html>
