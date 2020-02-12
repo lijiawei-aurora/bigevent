@@ -13,6 +13,7 @@
     <link type="text/css" rel="stylesheet" href="js/jedate/css/jedate.css" />
     <script src="js/jquery-1.12.4.min.js"></script>
     <script src="js/jedate/js/jedate.js"></script>
+    <!-- 引入富文本编辑器插件 -->
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
 </head>
@@ -23,54 +24,38 @@
             写文章
         </div>
         <div class="container-fluid common_con">
-            <form class="form-horizontal article_form">
+            <form class="form-horizontal article_form" id="myform">
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label
+                    <label for="title" class="col-sm-2 control-label">文章标题：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="title" placeholder="文章标题" name="title" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputFile" class="col-sm-2 control-label">文章封面：</label
             >
             <div class="col-sm-10">
-              <input
-                type="email"
-                class="form-control"
-                id="inputEmail3"
-                placeholder="文章标题"
-              />
+              <input type="file" id="exampleInputFile" name="cover" />
             </div>
           </div>
           <div class="form-group">
-            <label for="inputPassword3" class="col-sm-2 control-label"
-              >文章封面：</label
-            >
-            <div class="col-sm-10">
-              <input type="file" id="exampleInputFile" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputEmail3" class="col-sm-2 control-label"
-              >文章类别：</label
-            >
-            <div class="col-sm-4">
-              <select class="form-control">
-                <option>1</option>
+            <label for="type" class="col-sm-2 control-label">文章类别：</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" name="type" id="type">
+                <!-- <option>1</option>
                 <option>2</option>
                 <option>3</option>
                 <option>4</option>
-                <option>5</option>
+                <option>5</option> -->
               </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputEmail3" class="col-sm-2 control-label"
-              >发布时间：</label
-            >
-            <div class="col-sm-4">
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="YYYY-MM-DD"
-                  id="dateinput"
-                />
-                <span class="input-group-btn">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="col-sm-2 control-label">发布时间：</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input name="date" type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput" />
+                            <span class="input-group-btn">
                   <button
                     class="btn btn-default"
                     type="button"
@@ -79,12 +64,11 @@
                     <i class="iconfont icon-icondate"></i>
                   </button>
                 </span>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputEmail3" class="col-sm-2 control-label"
-              >文章内容：</label
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rich_content" class="col-sm-2 control-label">文章内容：</label
             >
             <div class="col-sm-10">
               <textarea
@@ -100,12 +84,47 @@
           </div>
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-success">发布</button>
-              <button type="submit" class="btn btn-default">存为草稿</button>
+              <button id="publish" type="button" class="btn btn-success">
+                发布
+              </button>
+              <button id="save" type="button" class="btn btn-default">
+                存为草稿
+              </button>
             </div>
           </div>
         </form>
       </div>
     </div>
   </body>
+  <script src="js/util/config.js"></script>
+  <script src="js/util/article.js"></script>
+  <script src="js/util/category.js"></script>
+  <script src="js/template-web.js"></script>
+  <script type="text/html" id="tmp">
+    {{each data item}}
+    <option value="{{item.id}}">{{item.name}}</option>
+    {{/each}}
+  </script>
+  <script>
+    //   获取文章分类
+
+    category.get().then(res => {
+      if (res.code === 200) {
+        var htmlStr = template("tmp", res);
+        $("#type").html(htmlStr);
+      }
+    });
+    $("#publish").click(() => {
+      // 通过FormData获取表单中有name 属性的标签的内容
+      let fd = new FormData(document.getElementById("myform"));
+      fd.append("state", "已发布");
+      //   获取富文本编辑器中的内容赋给content
+      //   fd.set()更新参数的值
+      // fd.get()获取参数的值
+      fd.set("content", tinyMCE.activeEditor.getContent());
+      article.add(fd).then(res => {
+        console.log(res);
+      });
+    });
+  </script>
 </html>
